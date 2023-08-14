@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Redis</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.redis</a>
+</div>
+
+<h1>Coverage Summary for Class: Redis (cn.llonvne.lojbackend.redis)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+  <tr>
+    <td class="name">Redis$DefaultImpls</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.redis
+&nbsp;
+&nbsp;import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+&nbsp;import kotlinx.coroutines.reactive.awaitFirstOrNull
+&nbsp;import kotlinx.coroutines.reactive.awaitSingle
+&nbsp;import org.springframework.context.annotation.Bean
+&nbsp;import org.springframework.context.annotation.Configuration
+&nbsp;import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
+&nbsp;import org.springframework.data.redis.core.ReactiveRedisOperations
+&nbsp;import org.springframework.data.redis.core.ReactiveRedisTemplate
+&nbsp;import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+&nbsp;import org.springframework.data.redis.serializer.RedisSerializationContext
+&nbsp;import org.springframework.data.redis.serializer.StringRedisSerializer
+&nbsp;import org.springframework.stereotype.Component
+&nbsp;import java.time.Duration
+&nbsp;
+&nbsp;interface Redis {
+<b class="fc">&nbsp;    suspend fun set(key: String, value: Any, timeout: Duration? = null): Boolean</b>
+&nbsp;    suspend fun get(key: String): Any?
+&nbsp;    suspend fun delete(key: String): Long
+&nbsp;    suspend fun hasKey(key: String): Boolean
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;suspend inline fun &lt;reified Type&gt; Redis.getTyped(key: String): Type? {
+&nbsp;    return jacksonObjectMapper().convertValue(get(key), Type::class.java)
+&nbsp;}
+&nbsp;
+&nbsp;@Component
+&nbsp;private class CoroutineRedisUtil(private val reactiveRedisOps: ReactiveRedisOperations&lt;String, Any&gt;) : Redis {
+&nbsp;
+&nbsp;    override suspend fun set(key: String, value: Any, timeout: Duration?): Boolean {
+&nbsp;        return if (timeout != null) {
+&nbsp;            reactiveRedisOps.opsForValue().set(key, value, timeout).awaitSingle()
+&nbsp;        } else {
+&nbsp;            reactiveRedisOps.opsForValue().set(key, value).awaitSingle()
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    override suspend fun get(key: String): Any? {
+&nbsp;        return reactiveRedisOps.opsForValue()[key].awaitFirstOrNull()
+&nbsp;    }
+&nbsp;
+&nbsp;    override suspend fun delete(key: String): Long {
+&nbsp;        return reactiveRedisOps.delete(key).awaitSingle()
+&nbsp;    }
+&nbsp;
+&nbsp;    override suspend fun hasKey(key: String): Boolean {
+&nbsp;        return reactiveRedisOps.hasKey(key).awaitSingle()
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;@Configuration
+&nbsp;private class RedisConfig {
+&nbsp;    @Bean
+&nbsp;    fun reactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations&lt;String, Any&gt; {
+&nbsp;        val serializer = Jackson2JsonRedisSerializer(Any::class.java)
+&nbsp;        return ReactiveRedisTemplate(
+&nbsp;            factory, RedisSerializationContext.newSerializationContext&lt;String, Any&gt;(
+&nbsp;                StringRedisSerializer()
+&nbsp;            ).value(serializer).build()
+&nbsp;        )
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

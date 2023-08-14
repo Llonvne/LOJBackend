@@ -1,0 +1,125 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LoginService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.service</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginService (cn.llonvne.lojbackend.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">LoginService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.service
+&nbsp;
+&nbsp;import cn.llonvne.lojbackend.dto.LoginUserDto
+&nbsp;import cn.llonvne.lojbackend.entity.User
+&nbsp;import cn.llonvne.lojbackend.entity.redisKey
+&nbsp;import cn.llonvne.lojbackend.redis.Redis
+&nbsp;import cn.llonvne.lojbackend.response.Response
+&nbsp;import cn.llonvne.lojbackend.security.Jwt
+&nbsp;import cn.llonvne.lojbackend.security.LoginUser
+&nbsp;import org.springframework.http.HttpStatus
+&nbsp;import org.springframework.security.authentication.AuthenticationManager
+&nbsp;import org.springframework.security.authentication.BadCredentialsException
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;
+&nbsp;@Service
+&nbsp;interface LoginService {
+&nbsp;    suspend fun login(userDto: LoginUserDto): Response&lt;Map&lt;String, String&gt;&gt;
+&nbsp;}
+&nbsp;
+&nbsp;@Service
+&nbsp;private class LoginServiceImpl(
+&nbsp;    val authenticationManager: AuthenticationManager,
+&nbsp;    val jwt: Jwt,
+&nbsp;    val redis: Redis
+&nbsp;) : LoginService {
+&nbsp;
+&nbsp;    fun userJwtResponse(user: User): Response&lt;Map&lt;String, String&gt;&gt; {
+&nbsp;        val userId = user.id?.toString()
+&nbsp;        if (userId == null) {
+&nbsp;
+&nbsp;        } else {
+&nbsp;            return Response(
+&nbsp;                HttpStatus.OK,
+&nbsp;                &quot;登入成功&quot;,
+&nbsp;                mapOf(
+&nbsp;                    &quot;token&quot; to jwt.generateToken(userId),
+&nbsp;                )
+&nbsp;            )
+&nbsp;        }
+&nbsp;        throw NotImplementedError()
+&nbsp;    }
+&nbsp;
+&nbsp;    override suspend fun login(userDto: LoginUserDto): Response&lt;Map&lt;String, String&gt;&gt; {
+&nbsp;        val token = UsernamePasswordAuthenticationToken(userDto.username, userDto.password)
+&nbsp;        try {
+&nbsp;            val authentication = authenticationManager.authenticate(token)
+&nbsp;            val principal = authentication.principal as LoginUser
+&nbsp;            val user = principal.user
+&nbsp;            redis.set(user.redisKey, user)
+&nbsp;            return userJwtResponse(user)
+&nbsp;        } catch (e: BadCredentialsException) {
+&nbsp;
+&nbsp;        }
+&nbsp;        throw NotImplementedError()
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

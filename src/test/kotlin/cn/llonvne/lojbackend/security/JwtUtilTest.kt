@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+@TestPropertySource(locations = ["classpath:test.properties"])
 @ContextConfiguration(classes = [TestLojBackendApplication::class])
 @SpringBootTest(useMainMethod = SpringBootTest.UseMainMethod.ALWAYS)
 class JwtUtilTest {

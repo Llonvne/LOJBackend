@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > User</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: User (cn.llonvne.lojbackend.entity)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">User</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">User$HibernateInstantiator$u7WVouVa</td>
+  </tr>
+  <tr>
+    <td class="name">User$HibernateProxy$fBKH1wGx</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.entity
+&nbsp;
+&nbsp;import cn.llonvne.lojbackend.entity.types.Sex
+&nbsp;import cn.llonvne.lojbackend.entity.types.UserType
+&nbsp;import jakarta.persistence.*
+&nbsp;import org.hibernate.annotations.JdbcTypeCode
+&nbsp;import org.hibernate.type.SqlTypes
+&nbsp;
+&nbsp;inline fun userOf(username: String, password: String, configuration: User.() -&gt; Unit = {}) = User().apply {
+&nbsp;    this.username = username
+&nbsp;    this.encodedPassword = password
+&nbsp;    configuration()
+&nbsp;}
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;@Entity</b>
+&nbsp;@Table(name = &quot;tb_user&quot;)
+&nbsp;open class User {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+&nbsp;    @Column(name = &quot;id&quot;, nullable = false)
+<b class="fc">&nbsp;    open var id: Long? = null</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Column(name = &quot;username&quot;, nullable = false)
+<b class="fc">&nbsp;    open var username: String = &quot;&quot;</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Column(name = &quot;encoded_password&quot;, nullable = false)
+<b class="fc">&nbsp;    open var encodedPassword: String? = null</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Column(name = &quot;email&quot;)
+<b class="fc">&nbsp;    open var email: String? = null</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Column(name = &quot;avatar_url&quot;)
+<b class="fc">&nbsp;    open var avatarUrl: String? = null</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;sex&quot;, length = 20)
+<b class="fc">&nbsp;    open var sex: Sex = Sex.Unknown</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.VARCHAR)
+&nbsp;    @Enumerated(EnumType.STRING)
+&nbsp;    @Column(name = &quot;user_type&quot;, length = 20)
+<b class="fc">&nbsp;    open var userType: UserType = UserType.User</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.BOOLEAN)
+&nbsp;    @Column(name = &quot;enabled&quot;)
+<b class="fc">&nbsp;    open var enabled: Boolean = true</b>
+&nbsp;
+&nbsp;    @JdbcTypeCode(SqlTypes.BOOLEAN)
+&nbsp;    @Column(name = &quot;deleted&quot;)
+<b class="fc">&nbsp;    open var deleted: Boolean = false</b>
+&nbsp;}
+&nbsp;
+&nbsp;val User.redisKey get() = fromUserId(id.toString())
+&nbsp;
+&nbsp;fun fromUserId(id: String) = &quot;login:$id&quot;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

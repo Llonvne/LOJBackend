@@ -1,4 +1,4 @@
-package cn.llonvne.lojbackend.repository;
+package cn.llonvne.lojbackend.repository
 
 import cn.llonvne.lojbackend.entity.User
 import org.springframework.data.jpa.repository.JpaRepository

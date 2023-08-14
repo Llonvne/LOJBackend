@@ -1,0 +1,171 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LoginServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.service</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginServiceImpl (cn.llonvne.lojbackend.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoginServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (18/21)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LoginServiceImpl$login$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (18/21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.service
+&nbsp;
+&nbsp;import cn.llonvne.lojbackend.dto.LoginUserDto
+&nbsp;import cn.llonvne.lojbackend.entity.User
+&nbsp;import cn.llonvne.lojbackend.entity.redisKey
+&nbsp;import cn.llonvne.lojbackend.redis.Redis
+&nbsp;import cn.llonvne.lojbackend.response.Response
+&nbsp;import cn.llonvne.lojbackend.security.Jwt
+&nbsp;import cn.llonvne.lojbackend.security.LoginUser
+&nbsp;import org.springframework.http.HttpStatus
+&nbsp;import org.springframework.security.authentication.AuthenticationManager
+&nbsp;import org.springframework.security.authentication.BadCredentialsException
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;
+&nbsp;@Service
+&nbsp;interface LoginService {
+&nbsp;    suspend fun login(userDto: LoginUserDto): Response&lt;Map&lt;String, String&gt;&gt;
+&nbsp;}
+&nbsp;
+<b class="fc">&nbsp;@Service</b>
+&nbsp;private class LoginServiceImpl(
+<b class="fc">&nbsp;    val authenticationManager: AuthenticationManager,</b>
+<b class="fc">&nbsp;    val jwt: Jwt,</b>
+<b class="fc">&nbsp;    val redis: Redis</b>
+&nbsp;) : LoginService {
+&nbsp;
+&nbsp;    fun userJwtResponse(user: User): Response&lt;Map&lt;String, String&gt;&gt; {
+<b class="fc">&nbsp;        val userId = user.id?.toString()</b>
+<b class="fc">&nbsp;        if (userId == null) {</b>
+&nbsp;
+&nbsp;        } else {
+<b class="fc">&nbsp;            return Response(</b>
+<b class="fc">&nbsp;                HttpStatus.OK,</b>
+<b class="fc">&nbsp;                &quot;登入成功&quot;,</b>
+<b class="fc">&nbsp;                mapOf(</b>
+<b class="fc">&nbsp;                    &quot;token&quot; to jwt.generateToken(userId),</b>
+&nbsp;                )
+&nbsp;            )
+&nbsp;        }
+<b class="nc">&nbsp;        throw NotImplementedError()</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    override suspend fun login(userDto: LoginUserDto): Response&lt;Map&lt;String, String&gt;&gt; {
+<b class="fc">&nbsp;        val token = UsernamePasswordAuthenticationToken(userDto.username, userDto.password)</b>
+<b class="fc">&nbsp;        try {</b>
+<b class="fc">&nbsp;            val authentication = authenticationManager.authenticate(token)</b>
+<b class="fc">&nbsp;            val principal = authentication.principal as LoginUser</b>
+<b class="fc">&nbsp;            val user = principal.user</b>
+<b class="fc">&nbsp;            redis.set(user.redisKey, user)</b>
+<b class="fc">&nbsp;            return userJwtResponse(user)</b>
+<b class="nc">&nbsp;        } catch (e: BadCredentialsException) {</b>
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;        throw NotImplementedError()</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

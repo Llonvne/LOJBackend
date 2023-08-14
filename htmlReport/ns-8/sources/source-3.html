@@ -1,0 +1,148 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LoginUserDetailsImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.security</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginUserDetailsImpl (cn.llonvne.lojbackend.security)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoginUserDetailsImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.security
+&nbsp;
+&nbsp;import cn.llonvne.lojbackend.entity.User
+&nbsp;import cn.llonvne.lojbackend.repository.UserRepository
+&nbsp;import org.springframework.security.core.GrantedAuthority
+&nbsp;import org.springframework.security.core.userdetails.UserDetails
+&nbsp;import org.springframework.security.core.userdetails.UserDetailsService
+&nbsp;import org.springframework.security.core.userdetails.UsernameNotFoundException
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;
+&nbsp;interface LoginUser {
+&nbsp;    val user: User
+&nbsp;}
+&nbsp;
+&nbsp;@Service
+&nbsp;private class UserDetailServiceImpl(
+&nbsp;    val userRepository: UserRepository
+&nbsp;) : UserDetailsService {
+&nbsp;    override fun loadUserByUsername(username: String?): UserDetails {
+&nbsp;        username?.let {
+&nbsp;            val user = userRepository.findUserByUsername(username)
+&nbsp;                ?: throw UsernameNotFoundException(&quot;username $username not exist&quot;)
+&nbsp;            return LoginUserDetailsImpl(user)
+&nbsp;        } ?: throw UsernameNotFoundException(&quot;username is null&quot;)
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;private class LoginUserDetailsImpl(override val user: User) : UserDetails, LoginUser {</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun getAuthorities(): MutableCollection&lt;out GrantedAuthority&gt; = mutableListOf()</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun getPassword() = user.encodedPassword</b>
+&nbsp;
+<b class="nc">&nbsp;    override fun getUsername() = user.username</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun isEnabled() = user.enabled</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun isAccountNonExpired() = true</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun isAccountNonLocked() = true</b>
+&nbsp;
+<b class="fc">&nbsp;    override fun isCredentialsNonExpired() = true</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

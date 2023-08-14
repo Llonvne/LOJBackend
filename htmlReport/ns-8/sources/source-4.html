@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SecurityConfiguration</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.security</a>
+</div>
+
+<h1>Coverage Summary for Class: SecurityConfiguration (cn.llonvne.lojbackend.security)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SecurityConfiguration</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SecurityConfiguration$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$$SpringCGLIB$$1</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$$SpringCGLIB$$2</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$configure$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$configure$1$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$configure$1$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SecurityConfiguration$configure$1$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.security
+&nbsp;
+&nbsp;import cn.llonvne.lojbackend.security.filter.JwtAuthenticationTokenFilter
+&nbsp;import org.springframework.context.annotation.Bean
+&nbsp;import org.springframework.context.annotation.Configuration
+&nbsp;import org.springframework.security.authentication.AuthenticationManager
+&nbsp;import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+&nbsp;import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
+&nbsp;import org.springframework.security.config.annotation.web.builders.HttpSecurity
+&nbsp;import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+&nbsp;import org.springframework.security.config.annotation.web.invoke
+&nbsp;import org.springframework.security.config.http.SessionCreationPolicy
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+&nbsp;import org.springframework.security.web.DefaultSecurityFilterChain
+&nbsp;import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;@Configuration</b>
+&nbsp;@EnableWebSecurity
+&nbsp;@EnableMethodSecurity
+&nbsp;class SecurityConfiguration(
+<b class="fc">&nbsp;    val jwtAuthenticationTokenFilter: JwtAuthenticationTokenFilter</b>
+&nbsp;) {
+&nbsp;
+&nbsp;
+&nbsp;    @Bean
+<b class="fc">&nbsp;    fun passwordEncoder() = BCryptPasswordEncoder()</b>
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
+<b class="fc">&nbsp;        return authenticationConfiguration.authenticationManager</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    fun configure(http: HttpSecurity): DefaultSecurityFilterChain? {
+<b class="fc">&nbsp;        http {</b>
+<b class="fc">&nbsp;            csrf { disable() }</b>
+&nbsp;
+&nbsp;            // 启用无状态
+<b class="fc">&nbsp;            sessionManagement {</b>
+<b class="fc">&nbsp;                sessionCreationPolicy = SessionCreationPolicy.STATELESS</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // 配置拦截
+<b class="fc">&nbsp;            authorizeRequests {</b>
+<b class="fc">&nbsp;                authorize(&quot;/login&quot;, permitAll)</b>
+<b class="fc">&nbsp;                authorize(anyRequest, authenticated)</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // 添加过滤器
+<b class="fc">&nbsp;            addFilterBefore&lt;UsernamePasswordAuthenticationFilter&gt;(jwtAuthenticationTokenFilter)</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return http.build()</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

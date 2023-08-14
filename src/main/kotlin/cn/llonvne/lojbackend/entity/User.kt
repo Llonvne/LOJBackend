@@ -2,9 +2,27 @@ package cn.llonvne.lojbackend.entity
 
 import cn.llonvne.lojbackend.entity.types.Sex
 import cn.llonvne.lojbackend.entity.types.UserType
+import cn.llonvne.lojbackend.security.LoginUser
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.springframework.security.core.context.SecurityContextHolder
+
+inline fun userOf(username: String, password: String, configuration: User.() -> Unit = {}) = User().apply {
+    this.username = username
+    this.encodedPassword = password
+    configuration()
+}
+
+val User.redisKey get() = fromUserId(id.toString())
+
+fun fromUserId(id: String) = "login:$id"
+
+fun userFromSecurityContextHolder(): User? {
+    val loginUser = SecurityContextHolder.getContext()?.authentication?.principal as LoginUser?
+    return loginUser?.user
+}
+
 
 @Entity
 @Table(name = "tb_user")
@@ -20,7 +38,7 @@ open class User {
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "encoded_password", nullable = false)
-    open var encodedPassword: String = ""
+    open var encodedPassword: String? = null
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "email")

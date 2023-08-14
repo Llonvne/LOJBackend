@@ -1,5 +1,6 @@
 package cn.llonvne.lojbackend.redis
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.context.annotation.Bean
@@ -18,11 +19,15 @@ interface Redis {
     suspend fun get(key: String): Any?
     suspend fun delete(key: String): Long
     suspend fun hasKey(key: String): Boolean
+
+}
+
+suspend inline fun <reified Type> Redis.getTyped(key: String): Type? {
+    return jacksonObjectMapper().convertValue(get(key), Type::class.java)
 }
 
 @Component
 private class CoroutineRedisUtil(private val reactiveRedisOps: ReactiveRedisOperations<String, Any>) : Redis {
-
     override suspend fun set(key: String, value: Any, timeout: Duration?): Boolean {
         return if (timeout != null) {
             reactiveRedisOps.opsForValue().set(key, value, timeout).awaitSingle()

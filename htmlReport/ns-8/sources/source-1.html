@@ -1,0 +1,171 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Jwt</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cn.llonvne.lojbackend.security</a>
+</div>
+
+<h1>Coverage Summary for Class: Jwt (cn.llonvne.lojbackend.security)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+  <tr>
+    <td class="name">Jwt$DefaultImpls</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cn.llonvne.lojbackend.security
+&nbsp;
+&nbsp;import io.jsonwebtoken.Jwts
+&nbsp;import io.jsonwebtoken.SignatureAlgorithm
+&nbsp;import org.springframework.beans.factory.annotation.Value
+&nbsp;import org.springframework.stereotype.Component
+&nbsp;import java.security.Key
+&nbsp;import java.util.*
+&nbsp;import javax.crypto.spec.SecretKeySpec
+&nbsp;
+&nbsp;interface Jwt {
+&nbsp;    fun getKey(): Key
+&nbsp;    fun generateToken(username: String): String
+&nbsp;    fun validateToken(token: String, username: String): Boolean
+&nbsp;    fun parseToken(token: String): String {
+<b class="fc">&nbsp;        return Jwts.parserBuilder()</b>
+<b class="fc">&nbsp;            .setSigningKey(getKey())</b>
+<b class="fc">&nbsp;            .build()</b>
+<b class="fc">&nbsp;            .parseClaimsJws(token)</b>
+<b class="fc">&nbsp;            .body[&quot;sub&quot;] as String</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;private const val EXPIRATION_TIME: Long = 3600000 // 1 小时
+&nbsp;
+&nbsp;@Component
+&nbsp;/**
+&nbsp; * @property secretKey HMAC SHA-512 密钥以十六进制表示
+&nbsp; */
+&nbsp;private class JwtImpl(
+&nbsp;    @Value(&quot;\${secretKey}&quot;)
+&nbsp;    private val secretKey: String
+&nbsp;) : Jwt {
+&nbsp;
+&nbsp;    private val key by lazy {
+&nbsp;        val keyBytes = secretKey.toByteArray()
+&nbsp;        SecretKeySpec(keyBytes, 0, keyBytes.size, &quot;HmacSHA256&quot;)
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun getKey(): Key = key
+&nbsp;
+&nbsp;    override fun generateToken(username: String): String {
+&nbsp;        return Jwts.builder()
+&nbsp;            .setSubject(username)
+&nbsp;            .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
+&nbsp;            .signWith(key, SignatureAlgorithm.HS512)
+&nbsp;            .compact()
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun validateToken(token: String, username: String): Boolean {
+&nbsp;        val claims = Jwts.parserBuilder()
+&nbsp;            .setSigningKey(key)
+&nbsp;            .build()
+&nbsp;            .parseClaimsJws(token)
+&nbsp;            .body
+&nbsp;
+&nbsp;        return claims.subject == username &amp;&amp; !claims.expiration.before(Date())
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-08-13 21:01</div>
+</div>
+</body>
+</html>

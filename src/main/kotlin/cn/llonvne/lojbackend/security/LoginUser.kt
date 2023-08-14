@@ -8,6 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
+interface LoginUser {
+    val user: User
+}
+
 @Service
 private class UserDetailServiceImpl(
     val userRepository: UserRepository
@@ -21,7 +25,8 @@ private class UserDetailServiceImpl(
     }
 }
 
-private class LoginUserDetailsImpl(private val user: User) : UserDetails {
+
+private class LoginUserDetailsImpl(override val user: User) : UserDetails, LoginUser {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> = mutableListOf()
 
