@@ -1,5 +1,7 @@
 package cn.llonvne.lojbackend.redis
 
+import cn.llonvne.lojbackend.LojInternalApi
+import cn.llonvne.lojbackend.entity.types.AuthorityConverter
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
@@ -22,6 +24,7 @@ interface Redis {
 
 }
 
+@LojInternalApi
 suspend inline fun <reified Type> Redis.getTyped(key: String): Type? {
     return jacksonObjectMapper().convertValue(get(key), Type::class.java)
 }
@@ -50,14 +53,16 @@ private class CoroutineRedisUtil(private val reactiveRedisOps: ReactiveRedisOper
 }
 
 @Configuration
-private class RedisConfig {
+private class RedisConfig(private val authorityConverter: AuthorityConverter) {
     @Bean
     fun reactiveRedisOperations(factory: ReactiveRedisConnectionFactory): ReactiveRedisOperations<String, Any> {
         val serializer = Jackson2JsonRedisSerializer(Any::class.java)
+        val builder = RedisSerializationContext
+            .newSerializationContext<String, Any>(StringRedisSerializer())
+        val context = builder.value(serializer)
+            .build()
         return ReactiveRedisTemplate(
-            factory, RedisSerializationContext.newSerializationContext<String, Any>(
-                StringRedisSerializer()
-            ).value(serializer).build()
+            factory, context
         )
     }
 }

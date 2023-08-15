@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
-    kotlin("jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.8.22"
     kotlin("plugin.jpa") version "1.8.22"
 }
@@ -26,6 +26,10 @@ repositories {
 }
 
 dependencies {
+    // GraphQL
+    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
+    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
+    // SpringBoot
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
@@ -52,11 +56,21 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+
+    // 用于网络请求测试
+    testImplementation("io.ktor:ktor-client-core:1.6.3")
+    testImplementation("io.ktor:ktor-client-cio:1.6.3")
+    testImplementation("io.ktor:ktor-client-json:1.6.3")
+    testImplementation("io.ktor:ktor-client-json-jvm:1.6.3")
+    testImplementation("io.ktor:ktor-client-jackson:1.6.3")
+
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
+        freeCompilerArgs += "-Xopt-in=cn.llonvne.lojbackend.LojInternalApi"
+        freeCompilerArgs += "-Xcontext-receivers"
         jvmTarget = "17"
     }
 }

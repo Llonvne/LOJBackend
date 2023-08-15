@@ -1,10 +1,8 @@
 package cn.llonvne.lojbackend.security.filter
 
-import cn.llonvne.lojbackend.entity.User
-import cn.llonvne.lojbackend.entity.fromUserId
-import cn.llonvne.lojbackend.redis.Redis
-import cn.llonvne.lojbackend.redis.getTyped
+
 import cn.llonvne.lojbackend.security.Jwt
+import cn.llonvne.lojbackend.service.UserRedisService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -19,9 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthenticationTokenFilter(
     private val jwt: Jwt,
-    val redis: Redis
+    private val userRedisService: UserRedisService,
 ) : OncePerRequestFilter() {
-    override fun doFilterInternal(
+    public override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
@@ -31,6 +29,7 @@ class JwtAuthenticationTokenFilter(
         // 没有 token 放行
         if (!StringUtils.hasText(token)) {
             filterChain.doFilter(request, response)
+            return
         }
 
         val userId = try {
@@ -41,7 +40,7 @@ class JwtAuthenticationTokenFilter(
             return
         }
 
-        val user = runBlocking { redis.getTyped<User>(fromUserId(userId)) }
+        val user = runBlocking { userRedisService.get(userId) }
 
         // 无法获取用户
         if (user == null) {
@@ -54,8 +53,7 @@ class JwtAuthenticationTokenFilter(
             UsernamePasswordAuthenticationToken(
                 user.username,
                 user.encodedPassword,
-                // TODO 需要补充用户的权限信息
-                listOf()
+                user.authorities
             )
 
         filterChain.doFilter(request, response)

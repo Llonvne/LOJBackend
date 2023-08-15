@@ -1,31 +1,18 @@
 package cn.llonvne.lojbackend.entity
 
+import cn.llonvne.lojbackend.entity.types.Authority
 import cn.llonvne.lojbackend.entity.types.Sex
 import cn.llonvne.lojbackend.entity.types.UserType
-import cn.llonvne.lojbackend.security.LoginUser
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
-import org.springframework.security.core.context.SecurityContextHolder
-
-inline fun userOf(username: String, password: String, configuration: User.() -> Unit = {}) = User().apply {
-    this.username = username
-    this.encodedPassword = password
-    configuration()
-}
-
-val User.redisKey get() = fromUserId(id.toString())
-
-fun fromUserId(id: String) = "login:$id"
-
-fun userFromSecurityContextHolder(): User? {
-    val loginUser = SecurityContextHolder.getContext()?.authentication?.principal as LoginUser?
-    return loginUser?.user
-}
 
 
 @Entity
 @Table(name = "tb_user")
+/**
+ * 用户实体类
+ */
 open class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -65,4 +52,22 @@ open class User {
     @JdbcTypeCode(SqlTypes.BOOLEAN)
     @Column(name = "deleted")
     open var deleted: Boolean = false
+
+    @ElementCollection
+    @Convert(converter = AuthorityJpaConverter::class)
+    open var authorities: MutableList<Authority> = mutableListOf()
+}
+
+@Converter
+/**
+ * 用于将 Authority 转换为 String
+ */
+private class AuthorityJpaConverter : AttributeConverter<Authority, String> {
+    override fun convertToDatabaseColumn(attribute: Authority): String {
+        return attribute.authority
+    }
+
+    override fun convertToEntityAttribute(dbData: String?): Authority {
+        return Authority(dbData ?: "")
+    }
 }

@@ -2,13 +2,12 @@ package cn.llonvne.lojbackend.security
 
 import cn.llonvne.lojbackend.entity.User
 import cn.llonvne.lojbackend.repository.UserRepository
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
-interface LoginUser {
+interface AuthenticationUser {
     val user: User
 }
 
@@ -20,15 +19,14 @@ private class UserDetailServiceImpl(
         username?.let {
             val user = userRepository.findUserByUsername(username)
                 ?: throw UsernameNotFoundException("username $username not exist")
-            return LoginUserDetailsImpl(user)
+            return AuthenticationUserDetailsImpl(user)
         } ?: throw UsernameNotFoundException("username is null")
     }
 }
 
 
-private class LoginUserDetailsImpl(override val user: User) : UserDetails, LoginUser {
-
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = mutableListOf()
+private class AuthenticationUserDetailsImpl(override val user: User) : UserDetails, AuthenticationUser {
+    override fun getAuthorities() = user.authorities
 
     override fun getPassword() = user.encodedPassword
 
