@@ -8,6 +8,8 @@ plugins {
     kotlin("plugin.jpa") version "1.8.22"
 }
 
+
+
 group = "cn.llonvne"
 version = "0.0.1-SNAPSHOT"
 
@@ -26,24 +28,21 @@ repositories {
 }
 
 dependencies {
-    // GraphQL
-    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
-    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     // SpringBoot
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation("org.springframework.boot:spring-boot-starter-data-rest")
+//    implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+//    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.springframework.data:spring-data-rest-hal-explorer")
+//    implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
@@ -63,7 +62,6 @@ dependencies {
     testImplementation("io.ktor:ktor-client-json:1.6.3")
     testImplementation("io.ktor:ktor-client-json-jvm:1.6.3")
     testImplementation("io.ktor:ktor-client-jackson:1.6.3")
-
 }
 
 tasks.withType<KotlinCompile> {
@@ -75,6 +73,17 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+
+// enable K2 Compiler for Kotlin
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
+    }
 }

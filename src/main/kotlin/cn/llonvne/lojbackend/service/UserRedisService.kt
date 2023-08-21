@@ -12,7 +12,7 @@ private fun fromUserId(id: String) = "login:$id"
 interface UserRedisService {
     suspend fun store(user: User)
     suspend fun get(id: String): User?
-    suspend fun delete(user: User?)
+    suspend fun delete(id: Long?)
 }
 
 @Service
@@ -25,10 +25,9 @@ private class UserRedisServiceImpl(val redis: Redis) : UserRedisService {
         return redis.getTyped<User>(fromUserId(id))
     }
 
-    override suspend fun delete(user: User?) {
-        if (user != null) {
-            redis.delete(user.redisKey)
+    override suspend fun delete(id: Long?) {
+        if (id != null) {
+            redis.delete(fromUserId(id.toString()))
         }
     }
-
 }

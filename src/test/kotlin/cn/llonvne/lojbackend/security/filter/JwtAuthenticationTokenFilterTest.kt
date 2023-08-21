@@ -76,7 +76,10 @@ class JwtAuthenticationTokenFilterTest {
 
             val token: String = when (loginResp) {
                 LoginFailure -> fail("密码正确，但是登入失败")
-                is LoginSuccessful -> loginResp.token
+                is LoginSuccessful -> loginResp.data ?: ""
+                else -> {
+                    fail("未知的登入结果")
+                }
             }
 
             // 尝试登入

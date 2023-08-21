@@ -19,4 +19,3 @@ package cn.llonvne.lojbackend
     RequiresOptIn.Level.ERROR
 )
 annotation class LojInternalApi()
-

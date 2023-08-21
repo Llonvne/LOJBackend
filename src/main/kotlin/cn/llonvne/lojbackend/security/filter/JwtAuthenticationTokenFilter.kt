@@ -51,7 +51,7 @@ class JwtAuthenticationTokenFilter(
         // 存入 ContextHolder
         SecurityContextHolder.getContext().authentication =
             UsernamePasswordAuthenticationToken(
-                user.username,
+                user.id,
                 user.encodedPassword,
                 user.authorities
             )

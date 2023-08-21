@@ -21,7 +21,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfiguration(
     val jwtAuthenticationTokenFilter: JwtAuthenticationTokenFilter
 ) {
-
+//    @Bean
+//    fun corsConfigurer(): WebMvcConfigurer {
+//        return object : WebMvcConfigurer {
+//            override fun addCorsMappings(registry: CorsRegistry) {
+//                registry.addMapping("/graphql") // 你的GraphQL端点
+//                    .allowedOrigins("*") // 允许的域名
+//                    .allowedMethods("GET", "POST") // 允许的HTTP方法
+//
+//                registry.addMapping("/login")
+//                    .allowedMethods("*")
+//            }
+//        }
+//    }
 
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
@@ -44,9 +56,24 @@ class SecurityConfiguration(
             // 配置拦截
             authorizeRequests {
                 authorize("/login", permitAll)
+
+                // for hello
+                authorize("/hello", permitAll)
+
                 authorize(anyRequest, authenticated)
             }
 
+
+            // 关闭 Spring Security 提供的默认登入配置
+            this.logout {
+                disable()
+            }
+            this.formLogin {
+                disable()
+            }
+            this.httpBasic {
+                disable()
+            }
             // 添加过滤器
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthenticationTokenFilter)
         }

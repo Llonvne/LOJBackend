@@ -2,19 +2,19 @@ package cn.llonvne.lojbackend.service
 
 import cn.llonvne.lojbackend.dto.LoginUserDto
 import cn.llonvne.lojbackend.entity.User
-import cn.llonvne.lojbackend.entity.userFromSecurityContextHolder
+import cn.llonvne.lojbackend.entity.userIdFromSecurityContextHolder
 import cn.llonvne.lojbackend.response.*
-import cn.llonvne.lojbackend.security.Jwt
 import cn.llonvne.lojbackend.security.AuthenticationUser
+import cn.llonvne.lojbackend.security.Jwt
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
 interface LoginService {
-    suspend fun login(userDto: LoginUserDto): LoginResponse
+    suspend fun login(userDto: LoginUserDto): Response<*>
     suspend fun logout(): Response<String>
 }
 
@@ -30,7 +30,7 @@ private class LoginServiceImpl(
      * @param user 用户
      * @return JWT 响应 [LoginResponse]
      */
-    private fun userJwtResponse(user: User): LoginResponse {
+    private fun userJwtResponse(user: User): Response<String> {
         val userId = user.id
         val token = jwt.generateToken(userId.toString())
         return LoginSuccessful(token)
@@ -42,7 +42,7 @@ private class LoginServiceImpl(
      * @return 登入结果 [LoginResponse]
      */
     @Transactional
-    override suspend fun login(userDto: LoginUserDto): LoginResponse {
+    override suspend fun login(userDto: LoginUserDto): Response<*> {
 
         // 从 userDto 中获取用户名和密码，构造 UsernamePasswordAuthenticationToken
         val token = UsernamePasswordAuthenticationToken(userDto.username, userDto.password)
@@ -74,10 +74,10 @@ private class LoginServiceImpl(
      * @see Response
      */
     override suspend fun logout(): Response<String> {
-        // 从 SecurityContextHolder 中获得 User 对象
-        val user = userFromSecurityContextHolder()
         // 从 Redis 中删除 User 对象
-        userRedisService.delete(user)
+        userRedisService.delete(
+            userIdFromSecurityContextHolder()
+        )
         // 返回登出成功的 Response
         return Ok("登出成功")
     }

@@ -1,0 +1,17 @@
+type Query{
+    userById(id:ID):User
+    login(username:String!,password:String!):LoginResponse
+}
+
+
+type User{
+    id:ID,
+    username:String!
+    enabled:Boolean!
+}
+
+type LoginResponse{
+    code:Int
+    msg:String
+    data:String
+}

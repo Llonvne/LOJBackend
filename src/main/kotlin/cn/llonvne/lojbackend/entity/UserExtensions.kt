@@ -1,7 +1,6 @@
 package cn.llonvne.lojbackend.entity
 
 import cn.llonvne.lojbackend.LojInternalApi
-import cn.llonvne.lojbackend.security.AuthenticationUser
 import org.springframework.security.core.context.SecurityContextHolder
 
 /**
@@ -21,7 +20,9 @@ inline fun userOf(
     this.encodedPassword = password
 }.apply(configuration)
 
-fun userFromSecurityContextHolder(): User? {
-    val authenticationUser = SecurityContextHolder.getContext()?.authentication?.principal as AuthenticationUser?
-    return authenticationUser?.user
-}
+fun userIdFromSecurityContextHolder() =
+    try {
+        SecurityContextHolder.getContext().authentication.principal as Long?
+    } catch (e: Exception) {
+        null
+    }

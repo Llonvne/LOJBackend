@@ -1,16 +1,13 @@
 package cn.llonvne.lojbackend
 
-import cn.llonvne.lojbackend.dto.LoginUserDto
 import cn.llonvne.lojbackend.json.json
 import cn.llonvne.lojbackend.json.jsonValue
 import cn.llonvne.lojbackend.json.type
-import cn.llonvne.lojbackend.response.LoginResponse
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Component
 import org.springframework.test.web.servlet.*
 
 

@@ -12,7 +12,7 @@ class LojBackendApplicationTests {
 
     @Test
     fun testPasswordEncoder() = with(passwordEncoder) {
-        val origin = "123"
+        val origin = "admin"
         val encoded = encode(origin)
         println(encoded)
     }
